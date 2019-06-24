@@ -1,0 +1,18 @@
+---
+- pip:
+    name: redis
+
+- name: copy python script
+  copy:
+    src: script/iptables.py
+    dest: /usr/local/bin/iptables.py
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Add cronjob to check availability of redis blackip
+  copy:
+    src: cron.d/redis-checker
+    dest: /etc/cron.d/redis-checker
+
+

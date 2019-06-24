@@ -1,0 +1,55 @@
+---
+- name: Ensure EPEL repo is enabled
+  yum:
+    name: epel-release
+    state: present
+
+
+- name: install nginx
+  yum:
+    name: nginx
+    state: present
+
+- name: start nginx server
+  service: 
+    name: nginx 
+    state: started
+    enabled: "true"
+
+- name: copy nginx config file
+  template: 
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+  notify: restart nginx
+
+- name: Ensure sites-available, sites-enabled and ssl directories are present
+  file:
+    path: "/etc/nginx/{{ item }}"
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+  with_items:
+    - sites-available
+
+
+- name: enable configuration
+  template: 
+    src: "{{ item }}"
+    dest: "/etc/nginx/sites-available/{{ item }}"
+  with_items:
+    - default
+  notify: restart nginx
+
+- name: copy index.html
+  template: 
+    src: index.html.j2
+    dest: /usr/share/nginx/html/index.html 
+    mode: 0644
+  notify: restart nginx
+
+
+- name: Disable selinux
+  selinux:
+    policy: targeted
+    state: disabled

@@ -1,0 +1,59 @@
+---
+
+- name: Ensure "python" group is present
+  group:
+    name: python
+
+- name: Ensure "python" user is present
+  user:
+    name: python
+    group: python
+    home: /home/python
+
+- name: Ensure user keys are present
+  authorized_key:
+    user: python
+    key: "{{ item }}"
+    state: present
+  with_items:
+    - https://gitlab.baifu-tech.net/maliao.guo.keys
+    - https://github.com/Maliaotw.keys
+
+
+- name: Ensure "python" user has proper sudo privileges
+  copy:
+    src: sudoers.d/python
+    dest: /etc/sudoers.d/python
+    owner: root
+    group: root
+    mode: 0644
+
+
+- name: install package
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - bzip2
+    - python-pip
+    - git
+    - gcc
+
+
+- name: cpoy ssh
+  copy:
+    src: "{{ item }}"
+    dest: /home/python/.ssh
+    owner: python
+    group: python
+    mode: 0600
+  with_items:
+    - id_rsa
+    - id_rsa.pub
+
+
+- name: Download anaconda file 
+  get_url:
+    url: https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    dest: /home/python/Miniconda3-latest-Linux-x86_64.sh
+

@@ -1,0 +1,11 @@
+server {
+    listen 8000;
+    server_name .mysite.net;
+
+    #access_log /var/log/nginx/access-admin.log main;
+    #error_log /var/log/nginx/error-admin.log warn;
+
+    location / {
+        alias /usr/share/nginx/html;
+    }
+}

@@ -1,0 +1,19 @@
+server {
+    listen 80 default_server;
+    server_name _;
+    #root         /usr/share/nginx/html;
+    #include frontend_acl.conf;
+
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log;
+
+    location / {
+      include    uwsgi_params;
+      uwsgi_pass 127.0.0.1:8077;
+    }
+
+    location /static {
+        alias /home/python/CMDB/AutoCmdb/staticfiles;
+    }
+}
+

@@ -1,0 +1,2 @@
+Defaults:python !requiretty
+python  ALL=(ALL) NOPASSWD: /usr/bin/systemctl
